@@ -1,13 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import './index.css';
 import App from './components/App';
 import rootReducer from './reducers';
 
+// function logger(obj,next,action) (curried form)
+// logger(abj)(next)(action) - internal call by redux
+const logger = ({dispatch,getSatate}) => {
+  return function (next) {
+    return function(action){
+      //middleware code
+      console.log('ACTION_TYPE = ',action.type);
+      next(action);
+    }
+  }
+}
 
-const store=createStore(rootReducer);
+const store=createStore(rootReducer,applyMiddleware(logger));
 console.log('store', store);
 // console.log('BEFORE STATE', store.getState());
 
