@@ -22,7 +22,7 @@ class App extends React.Component {
   }
 
   render(){
-    const movies= this.props.store.getState();
+    const movies= this.props.store.getState().list; // state: {list: [], favourites:[]}
     console.log('RENDER');
     return ( 
       <div className="App">
