@@ -8,9 +8,9 @@ import rootReducer from './reducers';
 
 // function logger(obj,next,action) (curried form)
 // logger(abj)(next)(action) - internal call by redux
-const logger = ({dispatch,getSatate}) => {
-  return function (next) {
-    return function(action){
+const logger = ({dispatch,getState}) => {
+  return (next) => {
+    return (action) => {
       //middleware code
       console.log('ACTION_TYPE = ',action.type);
       next(action);
