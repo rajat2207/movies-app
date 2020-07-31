@@ -3,7 +3,8 @@ import {
     ADD_MOVIES,
     ADD_TO_FAVOURITES,
     REMOVE_FROM_FAVOURITES,
-    SET_SHOW_FAVOURITES
+    SET_SHOW_FAVOURITES,
+    ADD_MOVIE_TO_LIST
 } from '../actions/index';
 
 const initialMoviesState = {
@@ -13,6 +14,9 @@ const initialMoviesState = {
 }
 
 export function movies (state=initialMoviesState,action) {
+    // fetch movies and save in store, for now we are getting it from a file
+    // later we will get it from an API
+    
     // if(action.type === ADD_MOVIES){
     //     return {
     //         ...state, //using spread operator(...)
@@ -49,6 +53,13 @@ export function movies (state=initialMoviesState,action) {
                 ...state,
                 showFavourites : action.val
             }
+        
+        case ADD_MOVIE_TO_LIST:
+            return {
+                ...state,
+                list: [action.movie,...state]
+            };
+        
         default:
             return state;
     }

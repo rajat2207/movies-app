@@ -1,5 +1,6 @@
 import React from 'react';
 import { data } from '../data';
+import { addMovieToList } from '../actions';
 
 class Navbar extends React.Component {
 
@@ -11,22 +12,16 @@ class Navbar extends React.Component {
     }
   }
 
-  handleAddToMovies = () => {
-
+  handleAddToMovies = (movie) => {
+    this.props.dispatch(addMovieToList(movie));
+    this.setState({
+      showSearchResults: false
+    });
   } 
 
-  handleChange = (event) => {
-    this.setState({
-      searchText : event.target.value 
-    })
+  handleSearch = () => {
+    // 
   }
-
-  // handleSearch = () => {
-  //   const {searchText} = this.state;
-  //   const {store} = this.props;
-
-  //   store.dispatch(handleMovieSearch(searchText));
-  // }
 
   render () {
 
@@ -40,10 +35,10 @@ class Navbar extends React.Component {
             {showSearchResults && (
             <div className="search-results">
               <div className="search-result">
-                <img src={data[0].Poster} alt="search-pic" />
+                <img src={data[2].Poster} alt="search-pic" />
                 <div className="movie-info">
-                  <span>{data[0].Title}</span>
-                  <button onClick={this.handleAddToMovies}>
+                  <span>{data[2].Title}</span>
+                  <button onClick={() => this.handleAddToMovies(data[2])}>
                     Add to Movies
                   </button>
                 </div>
