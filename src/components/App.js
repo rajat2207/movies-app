@@ -3,6 +3,7 @@ import {data} from '../data';
 import {addMovies, showFavourites} from '../actions'
 import Navbar from './Navbar';
 import MovieCard from './MovieCard';
+import { storeContext } from '../index';
 
 class App extends React.Component {
 
@@ -71,4 +72,14 @@ class App extends React.Component {
   
 }
 
-export default App;
+class AppWrapper extends React.Component{
+  render(){
+    return (
+      <storeContext.Consumer>
+        {(store) => <App store={store}/>}
+      </storeContext.Consumer>
+    )
+  }
+}
+
+export default AppWrapper;

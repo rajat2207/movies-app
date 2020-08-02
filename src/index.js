@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk'; 
@@ -36,18 +36,24 @@ const logger = ({dispatch,getState}) => {
 
 const store=createStore(rootReducer,applyMiddleware(logger,thunk));
 console.log('store', store);
-// console.log('BEFORE STATE', store.getState());
 
-// store.dispatch({
-//   type: 'ADD_MOVIES',
-//   movies: [{name : 'Superman'}]
-// })
+export const storeContext = createContext();
 
-// console.log('AFTER STATE', store.getState())
+class Provider extends React.Component{
+  render(){
+    const {store} = this.props;
+    return <storeContext.Provider value={store}>
+      {this.props.children} 
+    </storeContext.Provider>
+  }
+  // children are the html tags and components which are present between the opening and closing tags of the class
+}
 
 ReactDOM.render(
   <React.StrictMode>
-    <App store={store} />
+    <Provider store={store}>
+      <App />
+    </Provider>  
   </React.StrictMode>,
   document.getElementById('root')
 );
