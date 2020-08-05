@@ -49,12 +49,61 @@ class Provider extends React.Component{
   // children are the html tags and components which are present between the opening and closing tags of the class
 }
 
+// const connectedAppComponent = connect(callback)(App);
+// function callback(state) {
+//   return {
+//     movies: state.movies,
+//     search: state.search,
+//   };
+// }
+export function connect (callback) {
+  return function (Component) {
+    class ConnectedComponent extends React.Component {
+      constructor(props) {
+        super(props);
+        const { store } = this.props;
+        this.unsubscribe = store.subscribe(() => { this.forceUpdate() });
+        //unsubscribe is a function returned when subcribe will be called.This function should be called when the component is destroyed in order to prevent memory leaks
+      }
+
+      componentWillUnmount() {
+        this.unsubscribe();
+      }
+
+      render() {
+        const { store } = this.props;
+        const state = store.getState();
+        const dataToBePassedAsProps = callback(state);
+        return (
+          <Component
+            {...dataToBePassedAsProps} /* ...(spread operator will pass the the content of callback as props) */
+            dispatch={store.dispatch}
+          />
+        );
+      }
+    }
+
+    //since we need access to the store in order to re-render the component on subscribing, we wrap it further in a wrapper
+    class ConnectedComponentWrapper extends React.Component {
+      render() {
+        return (
+          <storeContext.Consumer>
+            {(store) => (
+              <ConnectedComponent store={store} />
+            )}
+          </storeContext.Consumer>
+        );
+      }
+    }
+    
+    return ConnectedComponentWrapper;
+  }
+}
+
 ReactDOM.render(
-  <React.StrictMode>
     <Provider store={store}>
       <App />
-    </Provider>  
-  </React.StrictMode>,
+    </Provider> , 
   document.getElementById('root')
 );
 
