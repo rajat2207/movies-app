@@ -1,4 +1,5 @@
-import React, { createContext } from 'react';
+import React from 'react';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk'; 
@@ -37,17 +38,17 @@ const logger = ({dispatch,getState}) => {
 const store=createStore(rootReducer,applyMiddleware(logger,thunk));
 console.log('store', store);
 
-export const storeContext = createContext();
+// export const storeContext = createContext();
 
-class Provider extends React.Component{
-  render(){
-    const {store} = this.props;
-    return <storeContext.Provider value={store}>
-      {this.props.children} 
-    </storeContext.Provider>
-  }
-  // children are the html tags and components which are present between the opening and closing tags of the class
-}
+// class Provider extends React.Component{
+//   render(){
+//     const {store} = this.props;
+//     return <storeContext.Provider value={store}>
+//       {this.props.children} 
+//     </storeContext.Provider>
+//   }
+//   // children are the html tags and components which are present between the opening and closing tags of the class
+// }
 
 // const connectedAppComponent = connect(callback)(App);
 // function callback(state) {
@@ -56,49 +57,50 @@ class Provider extends React.Component{
 //     search: state.search,
 //   };
 // }
-export function connect (callback) {
-  return function (Component) {
-    class ConnectedComponent extends React.Component {
-      constructor(props) {
-        super(props);
-        const { store } = this.props;
-        this.unsubscribe = store.subscribe(() => { this.forceUpdate() });
-        //unsubscribe is a function returned when subcribe will be called.This function should be called when the component is destroyed in order to prevent memory leaks
-      }
 
-      componentWillUnmount() {
-        this.unsubscribe();
-      }
+// export function connect (callback) {
+//   return function (Component) {
+//     class ConnectedComponent extends React.Component {
+//       constructor(props) {
+//         super(props);
+//         const { store } = this.props;
+//         this.unsubscribe = store.subscribe(() => { this.forceUpdate() });
+//         //unsubscribe is a function returned when subcribe will be called.This function should be called when the component is destroyed in order to prevent memory leaks
+//       }
 
-      render() {
-        const { store } = this.props;
-        const state = store.getState();
-        const dataToBePassedAsProps = callback(state);
-        return (
-          <Component
-            {...dataToBePassedAsProps} /* ...(spread operator will pass the the content of callback as props) */
-            dispatch={store.dispatch}
-          />
-        );
-      }
-    }
+//       componentWillUnmount() {
+//         this.unsubscribe();
+//       }
 
-    //since we need access to the store in order to re-render the component on subscribing, we wrap it further in a wrapper
-    class ConnectedComponentWrapper extends React.Component {
-      render() {
-        return (
-          <storeContext.Consumer>
-            {(store) => (
-              <ConnectedComponent store={store} />
-            )}
-          </storeContext.Consumer>
-        );
-      }
-    }
+//       render() {
+//         const { store } = this.props;
+//         const state = store.getState();
+//         const dataToBePassedAsProps = callback(state);
+//         return (
+//           <Component
+//             {...dataToBePassedAsProps} /* ...(spread operator will pass the the content of callback as props) */
+//             dispatch={store.dispatch}
+//           />
+//         );
+//       }
+//     }
+
+//     //since we need access to the store in order to re-render the component on subscribing, we wrap it further in a wrapper
+//     class ConnectedComponentWrapper extends React.Component {
+//       render() {
+//         return (
+//           <storeContext.Consumer>
+//             {(store) => (
+//               <ConnectedComponent store={store} />
+//             )}
+//           </storeContext.Consumer>
+//         );
+//       }
+//     }
     
-    return ConnectedComponentWrapper;
-  }
-}
+//     return ConnectedComponentWrapper;
+//   }
+// }
 
 ReactDOM.render(
     <Provider store={store}>
